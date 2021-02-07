@@ -1,0 +1,58 @@
+query aaveUser($address: ID!) {
+  user(id: $address) {
+    reserves {
+      aTokenBalanceHistory {
+        timestamp
+        scaledATokenBalance
+        currentATokenBalance
+        index
+      }
+
+      scaledATokenBalance
+      currentATokenBalance
+
+      reserve {
+        name
+        symbol
+        decimals
+        liquidityIndex
+        liquidityRate
+        utilizationRate
+
+        price {
+          priceInEth
+          lastUpdateTimestamp
+          oracle {
+            usdPriceEth
+            lastUpdateTimestamp
+          }
+        }
+        paramsHistory {
+          utilizationRate
+          totalLiquidity
+          totalATokenSupply
+          availableLiquidity
+          priceInEth
+          priceInUsd
+          liquidityIndex
+          liquidityRate
+          timestamp
+        }
+      }
+      liquidityRate
+      redeemUnderlyingHistory {
+        id
+        amount
+        timestamp
+      }
+      depositHistory {
+        amount
+        timestamp
+
+        reserve {
+          symbol
+        }
+      }
+    }
+  }
+}

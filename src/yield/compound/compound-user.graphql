@@ -1,0 +1,24 @@
+query compoundUser($id: ID!) {
+  account(id: $id) {
+    tokens {
+      market {
+        name
+        symbol
+        exchangeRate
+        underlyingName
+        underlyingPrice
+        underlyingSymbol
+        underlyingPriceUSD
+        underlyingDecimals
+      }
+      symbol
+      cTokenBalance
+      totalUnderlyingSupplied
+      lifetimeSupplyInterestAccrued
+      transactions {
+        timestamp
+        tx_hash
+      }
+    }
+  }
+}

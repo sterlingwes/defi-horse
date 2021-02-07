@@ -1,0 +1,13 @@
+overwrite: true
+schema:
+  - "https://api.thegraph.com/subgraphs/name/aave/protocol-v2"
+  - "https://api.thegraph.com/subgraphs/name/graphprotocol/compound-v2"
+documents: "src/**/*.graphql"
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
