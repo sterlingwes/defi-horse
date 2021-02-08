@@ -24,6 +24,8 @@ jobs:
       - name: Install node_modules
         run: yarn install --pure-lockfile
       - run: yarn build
+        env:
+          REACT_APP_INFURA_PROJECT: "${{ secrets.INFURA_PROJECT }}"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
