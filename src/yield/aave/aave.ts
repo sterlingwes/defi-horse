@@ -5,7 +5,7 @@ import { HistoricalYield } from "../../common/yield.types";
 import { AaveUserQuery, AaveUserQueryVariables } from "../../generated/graphql";
 import { Deposit } from "../../common/account.types";
 
-const aaveUser = loader("./aave-user.graphql");
+const aaveUserQuery = loader("./aave-user.graphql");
 
 const graphUrl = "https://api.thegraph.com/subgraphs/name/aave/protocol-v2";
 
@@ -40,7 +40,11 @@ export const getAaveUser = async (
 ): Promise<AaveUser> => {
   if (cacheUser) return cacheUser;
 
-  const { user }: AaveUserQuery = await request(graphUrl, aaveUser, params);
+  const { user }: AaveUserQuery = await request(
+    graphUrl,
+    aaveUserQuery,
+    params
+  );
 
   // @ts-ignore
   window.aaveUser = user;

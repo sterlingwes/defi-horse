@@ -1,8 +1,13 @@
+import { loader } from "graphql.macro";
+import { request } from "graphql-request";
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
 import { compAbi } from "../../abi";
+import { CompoundUserQuery } from "../../generated/graphql";
 
 const infuraProject = process.env.REACT_APP_INFURA_PROJECT;
+const base = new BigNumber(10);
+const coefficient = base.pow(-18);
 
 /**
  * get COMP that accrues along with interest, not yet claimed
@@ -24,8 +29,50 @@ export const getCompAllocation = async (address: string) => {
     .getCompBalanceMetadataExt(compTokenContract, comptrollerContract, address)
     .call();
 
-  const base = new BigNumber(10);
-  const coefficient = base.pow(-18);
   const actualBalance = coefficient.multipliedBy(compBalance.allocated);
   return actualBalance;
+};
+
+export interface CompoundUser {
+  balance: {
+    token: BigNumber;
+    usdc: BigNumber;
+  };
+  governance: {
+    token: BigNumber;
+  };
+}
+
+let cacheUser: CompoundUser | undefined;
+
+const graphUrl =
+  "https://api.thegraph.com/subgraphs/name/graphprotocol/compound-v2";
+const compoundUserQuery = loader("./compound-user.graphql");
+
+export const getCompoundUser = async ({ address }: { address: string }) => {
+  if (cacheUser) return cacheUser;
+
+  const compTokenAccrued = await getCompAllocation(address);
+
+  const { account }: CompoundUserQuery = await request(
+    graphUrl,
+    compoundUserQuery,
+    { id: address }
+  );
+
+  const firstToken = account?.tokens?.[0];
+
+  const tokenBalance = new BigNumber(firstToken?.cTokenBalance);
+
+  cacheUser = {
+    balance: {
+      token: tokenBalance,
+      usdc: tokenBalance.multipliedBy(firstToken?.market.exchangeRate),
+    },
+    governance: {
+      token: compTokenAccrued,
+    },
+  };
+
+  return cacheUser;
 };

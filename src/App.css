@@ -1,5 +1,10 @@
 .App {
+  margin: 20px;
   text-align: center;
+}
+
+.App > button {
+  padding: 10px;
 }
 
 .App-logo {
